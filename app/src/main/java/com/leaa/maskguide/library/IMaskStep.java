@@ -9,13 +9,16 @@ import android.view.View;
  * 遮罩步骤
  */
 public interface IMaskStep {
-    public interface OnEraseDraw{
+    public static final int STEP_TYPE_NEXT = 0;
+    public static final int STEP_TYPE_TOGETHER = 1;
+
+    public interface OnEraseDraw {
         void onEraseDraw(EraserParam param, RectF rectF);
     }
 
     public static class EraserParam {
         public static final int ERASER_TYPE_RECT = 0;
-        public static final int ERASER_TYPE_CIRCLE = 1;
+        public static final int ERASER_TYPE_OVAL = 1;
         public static final int ERASER_TYPE_ROUNDED = 2;
         public static final int ERASER_TYPE_CUSTOM = 3;
 
@@ -47,15 +50,17 @@ public interface IMaskStep {
         }
     }
 
-    RectF getEraserRect();
+    RectF getEraseRect();
 
-    EraserParam getEraserParam();
+    EraserParam getEraseParam();
 
     View getStepView();
 
     StepViewParam getStepViewParam();
 
-    void onStepEnter();
+    int getStepType();
 
-    void onStepExit();
+    void onStepEnter(IMaskStep step);
+
+    void onStepExit(IMaskStep step);
 }

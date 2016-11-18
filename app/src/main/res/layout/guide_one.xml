@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+    <com.leaa.maskguide.widget.LinkView
+        android:id="@+id/line"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        custom:endX="1.0"
+        custom:endY="0.08"
+        custom:end_point_color="#ff000000"
+        custom:end_point_radius="3dp"
+        custom:line_color="#77000000"
+        custom:line_width="1.5dp"
+        custom:startX="0.0"
+        custom:startY="1.0"
+        custom:start_point_color="#77000000"
+        custom:start_point_radius="2dp"
+        custom:turn_type="base_start_x"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@+id/line"
+        android:text="这里是\n一个玩意"/>
+</RelativeLayout>

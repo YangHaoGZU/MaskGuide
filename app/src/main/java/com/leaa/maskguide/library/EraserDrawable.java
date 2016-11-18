@@ -66,14 +66,18 @@ public class EraserDrawable extends Drawable {
             RectF rectF = eraser.first;
             IMaskStep.EraserParam param = eraser.second;
             switch (param.eraserType) {
-                case IMaskStep.EraserParam.ERASER_TYPE_CIRCLE:
-                    mEraserCanvas.drawOval(rectF, mEraserPaint);
+                case IMaskStep.EraserParam.ERASER_TYPE_OVAL:
+                    if (!rectF.isEmpty()) {
+                        mEraserCanvas.drawOval(rectF, mEraserPaint);
+                    }
                     break;
                 case IMaskStep.EraserParam.ERASER_TYPE_RECT:
-                    mEraserCanvas.drawRect(rectF, mEraserPaint);
+                    if (!rectF.isEmpty()) {
+                        mEraserCanvas.drawRect(rectF, mEraserPaint);
+                    }
                     break;
                 case IMaskStep.EraserParam.ERASER_TYPE_ROUNDED:
-                    if (param.obj instanceof Float) {
+                    if (param.obj instanceof Float && !rectF.isEmpty()) {
                         mEraserCanvas.drawRoundRect(rectF, (Float) param.obj, (Float) param.obj, mEraserPaint);
                     }
                     break;

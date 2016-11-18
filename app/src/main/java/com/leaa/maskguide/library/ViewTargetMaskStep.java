@@ -1,79 +1,52 @@
 package com.leaa.maskguide.library;
 
-import android.app.Activity;
 import android.graphics.RectF;
 import android.view.View;
 
 /**
  * Created by 杨浩 on 2016/11/17.
  */
-public class ViewTargetMaskStep implements IMaskStep {
+public class ViewTargetMaskStep extends MaskStepWrapper {
 
     private View mTargetView;
-    private EraserParam mEraserParam;
-    private View mStepView;
-    private StepViewParam mStepViewParam;
+
+    public ViewTargetMaskStep() {
+
+    }
+
+    public ViewTargetMaskStep(Builder builder) {
+        super(builder);
+        mTargetView = builder.targetView;
+    }
 
     public void setTargetView(View view) {
         mTargetView = view;
     }
 
-    public void setEraserParam(EraserParam eraserParam) {
-        mEraserParam = eraserParam;
-    }
-
-    public void setStepView(View stepView) {
-        mStepView = stepView;
-    }
-
-    public void setStepViewParam(StepViewParam stepViewParam) {
-        mStepViewParam = stepViewParam;
-    }
-
     @Override
-    public RectF getEraserRect() {
+    public RectF getEraseRect() {
         if (mTargetView != null) {
-            return getViewBounds(mTargetView);
+            return ViewHelper.getViewBounds(mTargetView);
+        } else {
+            return super.getEraseRect();
         }
-        return null;
     }
 
-    @Override
-    public EraserParam getEraserParam() {
-        return mEraserParam;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    @Override
-    public View getStepView() {
-        return mStepView;
-    }
+    public static class Builder extends MaskStepWrapper.Builder {
+        View targetView;
 
-    @Override
-    public StepViewParam getStepViewParam() {
-        return mStepViewParam;
-    }
-
-    @Override
-    public void onStepEnter() {
-
-    }
-
-    @Override
-    public void onStepExit() {
-
-    }
-
-    public static RectF getViewBounds(View view) {
-        int[] loc = new int[2];
-        view.getLocationInWindow(loc);
-        RectF rect = new RectF();
-        rect.set(loc[0], loc[1], loc[0] + view.getMeasuredWidth(), loc[1] + view.getMeasuredHeight());
-
-        if (view.getContext() instanceof Activity) {
-            View content = ((Activity) view.getContext()).findViewById(android.R.id.content);
-            content.getLocationInWindow(loc);
-            rect.offset(0, -loc[1]);
+        public Builder setTargetView(View targetView) {
+            this.targetView = targetView;
+            return this;
         }
-        return rect;
+
+        @Override
+        public IMaskStep build() {
+            return new ViewTargetMaskStep(this);
+        }
     }
 }

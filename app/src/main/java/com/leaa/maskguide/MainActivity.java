@@ -42,10 +42,10 @@ public class MainActivity extends Activity {
         {
             ViewTargetMaskStep step = new ViewTargetMaskStep();
             step.setTargetView(findViewById(R.id.button2));
-            step.setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_CIRCLE, 0f));
+            step.setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_OVAL, 0f));
             step.setStepViewParam(IMaskStep.StepViewParam.build(
-                    new PointF(0.5f, 0.5f),
-                    new PointF(0.5f, 0.5f),
+                    new PointF(0f, 0.5f),
+                    new PointF(1f, 0.5f),
                     0, 0
             ));
 
@@ -56,6 +56,20 @@ public class MainActivity extends Activity {
             step.setStepView(textView);
 
             stepList.add(step);
+        }
+        {
+            ViewTargetMaskStep.Builder builder = ViewTargetMaskStep.newBuilder()
+                    .setTargetView(findViewById(R.id.button3))
+                    .setEraserParam(IMaskStep.EraserParam.ERASER_TYPE_ROUNDED, 10f)
+                    .setStepView(this, R.layout.guide_one)
+                    .setStepViewParam(
+                            new PointF(0.5f, 0f),
+                            new PointF(0f, 1f),
+                            0, -10
+                    ).setStepType(IMaskStep.STEP_TYPE_TOGETHER)
+                    .convertTo(ViewTargetMaskStep.Builder.class);
+
+            stepList.add(builder.build());
         }
         MaskViewHelper.show(this, stepList);
     }
