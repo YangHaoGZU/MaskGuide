@@ -27,5 +27,5 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="3dp"
         android:layout_toRightOf="@+id/line"
-        android:text="这里是\n一个玩意"/>
+        android:text="这里是\n一个步骤"/>
 </RelativeLayout>

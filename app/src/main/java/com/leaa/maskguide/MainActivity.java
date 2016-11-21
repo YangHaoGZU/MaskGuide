@@ -22,40 +22,40 @@ public class MainActivity extends Activity {
 
         List<IMaskStep> stepList = new ArrayList<>();
         {
-            ViewTargetMaskStep step = new ViewTargetMaskStep();
-            step.setTargetView(findViewById(R.id.button));
-            step.setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_ROUNDED, 10f));
-            step.setStepViewParam(IMaskStep.StepViewParam.build(
-                    new PointF(1, 1),
-                    new PointF(0.2f, 0.2f),
-                    0, 0
-            ));
-
             TextView textView = new TextView(this);
             textView.setTextSize(13);
             textView.setText("就是这里");
             textView.setTextColor(Color.WHITE);
-            step.setStepView(textView);
 
-            stepList.add(step);
+            ViewTargetMaskStep.Builder step = ViewTargetMaskStep.newBuilder().
+                    setTargetView(findViewById(R.id.button)).
+                    setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_ROUNDED, 10f))
+                    .setStepViewParam(IMaskStep.StepViewParam.build(
+                            new PointF(1, 1),
+                            new PointF(0.2f, 0.2f),
+                            0, 0
+                    )).setStepView(textView)
+                    .convertTo(ViewTargetMaskStep.Builder.class);
+
+            stepList.add(step.build());
         }
         {
-            ViewTargetMaskStep step = new ViewTargetMaskStep();
-            step.setTargetView(findViewById(R.id.button2));
-            step.setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_OVAL, 0f));
-            step.setStepViewParam(IMaskStep.StepViewParam.build(
-                    new PointF(0f, 0.5f),
-                    new PointF(1f, 0.5f),
-                    0, 0
-            ));
-
             TextView textView = new TextView(this);
             textView.setTextSize(13);
             textView.setText("还有这里");
             textView.setTextColor(Color.WHITE);
-            step.setStepView(textView);
 
-            stepList.add(step);
+            ViewTargetMaskStep.Builder step = ViewTargetMaskStep.newBuilder().
+                    setTargetView(findViewById(R.id.button2)).
+                    setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_OVAL, null))
+                    .setStepViewParam(IMaskStep.StepViewParam.build(
+                            new PointF(0f, 0.5f),
+                            new PointF(1f, 0.5f),
+                            0, 0
+                    )).setStepView(textView)
+                    .convertTo(ViewTargetMaskStep.Builder.class);
+
+            stepList.add(step.build());
         }
         {
             ViewTargetMaskStep.Builder builder = ViewTargetMaskStep.newBuilder()
