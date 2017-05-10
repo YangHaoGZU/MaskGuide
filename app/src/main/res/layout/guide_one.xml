@@ -20,6 +20,7 @@
         custom:start_point_color="#77000000"
         custom:start_point_radius="2dp"
         custom:turn_type="base_start_x"
+        custom:autoPathAnim="true"
         />
 
     <TextView

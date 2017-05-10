@@ -1,5 +1,7 @@
 package com.leaa.maskguide.widget;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -7,13 +9,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.leaa.maskguide.R;
+import com.leaa.maskguide.lib.FloatProperty;
 
 /**
  * Created by 杨浩 on 2016/11/18.
@@ -35,6 +40,8 @@ public class LinkView extends View {
     private float mEndX;
     private float mEndY;
     private int mTurnType;
+    private boolean mAutoPathAnim;
+    private int mPathAnimDur;
 
     private PointF mStartPoint;
     private PointF mEndPoint;
@@ -43,6 +50,12 @@ public class LinkView extends View {
     private Paint mPaint;
     private Bitmap mCacheBitmap;
     private Canvas mCacheCanvas;
+
+    private ValueAnimator mPathAnimator;
+    private PathMeasure mPathMeasure;
+    private Path mFractionPath;
+    private float[] mFractionPoint;
+    private float mPathLength;
 
     public LinkView(Context context) {
         super(context);
@@ -72,6 +85,8 @@ public class LinkView extends View {
         mEndX = a.getFloat(R.styleable.LinkView_endX, 1);
         mEndY = a.getFloat(R.styleable.LinkView_endY, 1);
         mTurnType = a.getInt(R.styleable.LinkView_turn_type, 0);
+        mAutoPathAnim = a.getBoolean(R.styleable.LinkView_autoPathAnim, false);
+        mPathAnimDur = a.getInt(R.styleable.LinkView_pathAnimDur, 800);
         a.recycle();
 
         mStartPoint = new PointF();
@@ -81,6 +96,22 @@ public class LinkView extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+
+        mPathMeasure = new PathMeasure();
+        mFractionPath = new Path();
+        mPathLength = 0;
+        mFractionPoint = new float[2];
+        mPathAnimator = ObjectAnimator.ofFloat(null, new FloatProperty<Object>() {
+            @Override
+            public void setValue(Object object, float value) {
+                mFractionPath.reset();
+                mPathMeasure.getSegment(0, mPathLength * value, mFractionPath, true);
+                mPathMeasure.getPosTan(mPathLength * value, mFractionPoint, null);
+                invalidate();
+            }
+        }, 0.1f, 1f);
+        mPathAnimator.setInterpolator(new DecelerateInterpolator());
+        mPathAnimator.setDuration(mPathAnimDur);
     }
 
     @Override
@@ -121,6 +152,16 @@ public class LinkView extends View {
                 break;
         }
         mLinePath.lineTo(mEndPoint.x, mEndPoint.y);
+
+        mPathMeasure.setPath(mLinePath, false);
+        mPathLength = mPathMeasure.getLength();
+        mFractionPath.reset();
+        mFractionPoint[0] = mStartPoint.x;
+        mFractionPoint[1] = mStartPoint.y;
+        if(!mAutoPathAnim) {
+            mPathMeasure.getSegment(0, mPathLength, mFractionPath, true);
+            mPathMeasure.getPosTan(mPathLength, mFractionPoint, null);
+        }
     }
 
     @Override
@@ -131,16 +172,48 @@ public class LinkView extends View {
         mPaint.setColor(mLineColor);
         mPaint.setStrokeWidth(mLineWidth);
         mPaint.setStyle(Paint.Style.STROKE);
-        mCacheCanvas.drawPath(mLinePath, mPaint);
+        mCacheCanvas.drawPath(mFractionPath, mPaint);
 
         //画两个点
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(mStartPointColor);
         mCacheCanvas.drawCircle(mStartPoint.x, mStartPoint.y, mStartPointRadius, mPaint);
         mPaint.setColor(mEndPointColor);
-        mCacheCanvas.drawCircle(mEndPoint.x, mEndPoint.y, mEndPointRadius, mPaint);
+        mCacheCanvas.drawCircle(mFractionPoint[0], mFractionPoint[1], mEndPointRadius, mPaint);
 
         canvas.drawBitmap(mCacheBitmap, 0, 0, null);
     }
 
+    public void startLineAnim() {
+        mPathAnimator.end();
+        mPathAnimator.start();
+    }
+
+    public void endLineAnim() {
+        mPathAnimator.end();
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        mPathAnimator.end();
+        if (visibility == VISIBLE && mAutoPathAnim) {
+            mPathAnimator.start();
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (getVisibility() == VISIBLE && mAutoPathAnim) {
+            mPathAnimator.end();
+            mPathAnimator.start();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mPathAnimator.end();
+    }
 }

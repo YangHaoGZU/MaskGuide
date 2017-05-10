@@ -16,5 +16,7 @@
             <enum name="base_end_x" value="1"/>
             <enum name="direct" value="2"/>
         </attr>
+        <attr name="autoPathAnim" format="boolean"/>
+        <attr name="pathAnimDur" format="integer"/>
     </declare-styleable>
 </resources>
