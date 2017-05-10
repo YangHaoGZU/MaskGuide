@@ -50,8 +50,8 @@ public class MainActivity extends Activity {
                     setTargetView(findViewById(R.id.button2)).
                     setEraserParam(IMaskStep.EraserParam.build(IMaskStep.EraserParam.ERASER_TYPE_OVAL, null))
                     .setStepViewParam(IMaskStep.StepViewParam.build(
-                            new PointF(0f, 0.5f),
-                            new PointF(1f, 0.5f),
+                            new PointF(0.5f, 1f),
+                            new PointF(0.5f, -0.1f),
                             0, 0
                     )).setStepView(textView)
                     .convertTo(ViewTargetMaskStep.Builder.class);
